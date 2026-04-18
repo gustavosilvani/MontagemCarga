@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MontagemCarga.Api/MontagemCarga.Api.csproj" />
+    <Project Path="src/MontagemCarga.Application/MontagemCarga.Application.csproj" />
+    <Project Path="src/MontagemCarga.Domain/MontagemCarga.Domain.csproj" />
+    <Project Path="src/MontagemCarga.Infrastructure/MontagemCarga.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MontagemCarga.Tests/MontagemCarga.Tests.csproj" />
+  </Folder>
+</Solution>
