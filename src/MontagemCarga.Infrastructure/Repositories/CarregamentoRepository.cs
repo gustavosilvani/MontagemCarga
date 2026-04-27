@@ -232,4 +232,10 @@ public class CarregamentoRepository : ICarregamentoRepository
         parameter.Value = value;
         command.Parameters.Add(parameter);
     }
+
+    public async Task AtualizarAsync(Carregamento carregamento, CancellationToken cancellationToken = default)
+    {
+        _db.Carregamentos.Update(carregamento);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
 }

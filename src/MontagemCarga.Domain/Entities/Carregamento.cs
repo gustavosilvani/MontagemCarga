@@ -1,4 +1,5 @@
 using MontagemCarga.Domain.Enums;
+using MontagemCarga.Domain.Exceptions;
 
 namespace MontagemCarga.Domain.Entities;
 
@@ -168,6 +169,36 @@ public class Carregamento
             saidaEstimadaUtc,
             distanciaDesdeAnteriorKm,
             duracaoDesdeAnteriorMin));
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void IniciarTransito()
+    {
+        if (SituacaoCarregamento != SituacaoCarregamento.Montado &&
+            SituacaoCarregamento != SituacaoCarregamento.Roteirizado)
+            throw new BusinessRuleException(
+                $"Carregamento em '{SituacaoCarregamento}' não pode iniciar trânsito. Estado requerido: Montado ou Roteirizado.");
+
+        SituacaoCarregamento = SituacaoCarregamento.EmTransito;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Finalizar()
+    {
+        if (SituacaoCarregamento != SituacaoCarregamento.EmTransito)
+            throw new BusinessRuleException(
+                $"Carregamento em '{SituacaoCarregamento}' não pode ser finalizado. Estado requerido: EmTransito.");
+
+        SituacaoCarregamento = SituacaoCarregamento.Finalizado;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Cancelar()
+    {
+        if (SituacaoCarregamento == SituacaoCarregamento.Finalizado)
+            throw new BusinessRuleException("Carregamento finalizado não pode ser cancelado.");
+
+        SituacaoCarregamento = SituacaoCarregamento.Cancelado;
         UpdatedAt = DateTime.UtcNow;
     }
 

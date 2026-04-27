@@ -18,4 +18,5 @@ public interface ICarregamentoRepository
         IReadOnlyList<CarregamentoPlanejadoInput> carregamentos,
         IReadOnlyDictionary<Guid, IReadOnlyList<string>>? numerosReservadosPorFilial = null,
         CancellationToken cancellationToken = default);
+    Task AtualizarAsync(Carregamento carregamento, CancellationToken cancellationToken = default);
 }

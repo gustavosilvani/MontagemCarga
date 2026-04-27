@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MontagemCarga.Application.Commands.AgruparPedidos;
+using MontagemCarga.Application.Commands.CarregamentoLifecycle;
 using MontagemCarga.Application.Commands.CriarCarregamentos;
 using MontagemCarga.Application.Commands.SessoesMontagem;
 using MontagemCarga.Application.DTOs;
@@ -173,7 +174,6 @@ public class MontagemCargaController : ControllerBase
 
     /// <summary>
     /// Lista carregamentos persistidos com paginacao.
-    /// Endpoint apenas de leitura nesta fase do MVP.
     /// </summary>
     [HttpGet("carregamentos")]
     [ProducesResponseType(typeof(ListarCarregamentosResult), StatusCodes.Status200OK)]
@@ -182,5 +182,35 @@ public class MontagemCargaController : ControllerBase
         var query = new ListarCarregamentosQuery(page, pageSize);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpPost("carregamentos/{id:guid}/em-transito")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> IniciarTransito(Guid id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new IniciarTransitoCarregamentoCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPost("carregamentos/{id:guid}/finalizar")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> Finalizar(Guid id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new FinalizarCarregamentoCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPost("carregamentos/{id:guid}/cancelar")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> Cancelar(Guid id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new CancelarCarregamentoCommand(id), cancellationToken);
+        return NoContent();
     }
 }
